@@ -13,8 +13,8 @@ my @corsi_components = (
      { name => 'Rq', unit => 'kOhm' },
      { name => 'Cg', unit => 'pF' }
 );
-my %params = read_parameters(@corsi_components);
-output_components(\%params);
+my $params = read_parameters(@corsi_components);
+output_components($params);
 
 open my $input, '<', $fname_input or die ("error: could not open $!");
 open my $output, '>', $fname_output or die ("error: could not open $!");
@@ -30,12 +30,12 @@ while (<$input>) {
 }
 
 sub read_parameters {
-    my %params;
+    my $refparams = {};
     for (my $i = 0; $i < @_; $i++) {
         print "$_[$i]{'name'} [$_[$i]{'unit'}]: ";
-        chomp($params{$_[$i]{'name'}} = <STDIN>); 
+        chomp($refparams->{$_[$i]{'name'}} = <STDIN>); 
     }
-    return %params;
+    return $refparams;
 }
 
 sub output_components {
