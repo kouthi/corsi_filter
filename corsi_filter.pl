@@ -23,10 +23,14 @@ while (<$input>) {
     chomp; my @line_args = split, /' '/;
     if ($instName) {
         foreach (@corsi_components) {
-            say "$instName: $line_args[2]" if $instName eq $_->{'name'};
+            if ($instName eq $_->{'name'}) {
+                #say "$instName: $line_args[2]" if $instName eq $_->{'name'};
+                $line_args[2] = $params->{$_->{'name'}};
+            }
         }
     }
     $instName = $line_args[1] eq 'InstName' ? $line_args[2] : '';
+    say $output join ' ', @line_args;
 }
 
 sub read_parameters {
