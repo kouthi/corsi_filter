@@ -7,12 +7,14 @@ my ($fname_input, $fname_output);
 $fname_input = $ARGV[0];
 $fname_output = $ARGV[1];
 
-my $npixel = { name => 'Npixel', unit => '' };
-my $cd = { name => 'Cd', unit => 'fF' };
-my $cq = { name => 'Cq', unit => 'fF' };
-my $rq = { name => 'Rq', unit => 'kOhm' };
-my $cg = { name => 'Cg', unit => 'pF' };
-my %params = read_parameters($npixel, $cd, $cq, $rq, $cg);
+my @corsi_args = (
+     { name => 'Npixel', unit => '' },
+     { name => 'Cd', unit => 'fF' },
+     { name => 'Cq', unit => 'fF' },
+     { name => 'Rq', unit => 'kOhm' },
+     { name => 'Cg', unit => 'pF' }
+);
+my %params = read_parameters(@corsi_args);
 say '-----';
 foreach (keys %params) {
     say "$_: $params{$_}";
