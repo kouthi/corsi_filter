@@ -7,28 +7,32 @@ my ($fname_input, $fname_output);
 $fname_input = $ARGV[0];
 $fname_output = $ARGV[1];
 
-my %params = read_parameters();
-say "-----";
+my $npixel = { name => 'Npixel', unit => '' };
+my $cd = { name => 'Cd', unit => 'fF' };
+my $cq = { name => 'Cq', unit => 'fF' };
+my $rq = { name => 'Rq', unit => 'kOhm' };
+my $cg = { name => 'Cg', unit => 'pF' };
+my %params = read_parameters($npixel, $cd, $cq, $rq, $cg);
+say '-----';
 foreach (keys %params) {
     say "$_: $params{$_}";
 }
-say "-----";
+say '-----';
 
-open my $input, "<", $fname_input or die ("error: could not open $!");
+open my $input, '<', $fname_input or die ("error: could not open $!");
 my $flag_InstName = 0;
 while (<$input>) {
     chomp;
     my @line_args = split, /' '/;
     say $line_args[2] if $flag_InstName;
-    $flag_InstName = $line_args[1] eq "InstName" ? 1 : 0;
+    $flag_InstName = $line_args[1] eq 'InstName' ? 1 : 0;
 }
 
 sub read_parameters {
     my %params;
-    print "Npixel: "; chomp($params{"Npixel"} = <STDIN>); 
-    print "Cd: "; chomp($params{"Cd"} = <STDIN>); 
-    print "Cq: "; chomp($params{"Cq"} = <STDIN>); 
-    print "Rq: "; chomp($params{"Rq"} = <STDIN>); 
-    print "Cg: "; chomp($params{"Cg"} = <STDIN>); 
+    for (my $i = 0; $i < @_; $i++) {
+        print "$_[$i]{'name'} [$_[$i]{'unit'}]: ";
+        chomp($params{$_[$i]{'name'}} = <STDIN>); 
+    }
     return %params;
 }
