@@ -7,15 +7,7 @@ my ($fname_input, $fname_output);
 $fname_input = $ARGV[0];
 $fname_output = $ARGV[1];
 
-my $cd = { name => "Cd", unit => "fF" };
-say $cd;
-my $cq = { name => "Cq", unit => "fF" };
-say $cq;
-my $rq = { name => "Rq", unit => "kOhm" };
-say $rq;
-my $cg = { name => "Cg", unit => "pF" };
-say $cg;
-my %params = read_parameters($cd, $cq, $rq, $cg);
+my %params = read_parameters();
 say "-----";
 foreach (keys %params) {
     say "$_: $params{$_}";
@@ -32,14 +24,11 @@ while (<$input>) {
 }
 
 sub read_parameters {
-    say @_;
     my %params;
     print "Npixel: "; chomp($params{"Npixel"} = <STDIN>); 
-    for (my $i = 0; $i < @_; $i++) {
-        my $ref = shift;
-        say $ref;
-        #print "$ref->{'name'} [$ref->{'unit'}]: "; 
-        #chomp($params{$ref->{'name'}} = <STDIN>);
-    }
+    print "Cd: "; chomp($params{"Cd"} = <STDIN>); 
+    print "Cq: "; chomp($params{"Cq"} = <STDIN>); 
+    print "Rq: "; chomp($params{"Rq"} = <STDIN>); 
+    print "Cg: "; chomp($params{"Cg"} = <STDIN>); 
     return %params;
 }
