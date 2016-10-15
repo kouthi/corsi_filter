@@ -3,31 +3,30 @@ use strict;
 use warnings;
 use 5.010;
 
-my ($fname_input, $fname_output);
-$fname_input = $ARGV[0];
-$fname_output = $ARGV[1];
+my $fname_input = shift;
+my $fname_output = shift;
 
-my @corsi_args = (
+my @corsi_components = (
      { name => 'Npixel', unit => '' },
      { name => 'Cd', unit => 'fF' },
      { name => 'Cq', unit => 'fF' },
      { name => 'Rq', unit => 'kOhm' },
      { name => 'Cg', unit => 'pF' }
 );
-my %params = read_parameters(@corsi_args);
-say '-----';
-foreach (keys %params) {
-    say "$_: $params{$_}";
-}
-say '-----';
+my %params = read_parameters(@corsi_components);
+output_components(\%params);
 
 open my $input, '<', $fname_input or die ("error: could not open $!");
-my $flag_InstName = 0;
+open my $output, '>', $fname_output or die ("error: could not open $!");
+my $instName = '';
 while (<$input>) {
-    chomp;
-    my @line_args = split, /' '/;
-    say $line_args[2] if $flag_InstName;
-    $flag_InstName = $line_args[1] eq 'InstName' ? 1 : 0;
+    chomp; my @line_args = split, /' '/;
+    if ($instName) {
+        foreach (@corsi_components) {
+            say "$instName: $line_args[2]" if $instName eq $_->{'name'};
+        }
+    }
+    $instName = $line_args[1] eq 'InstName' ? $line_args[2] : '';
 }
 
 sub read_parameters {
@@ -37,4 +36,13 @@ sub read_parameters {
         chomp($params{$_[$i]{'name'}} = <STDIN>); 
     }
     return %params;
+}
+
+sub output_components {
+    my $refparams = shift;
+    say '-----';
+    foreach (keys %{$refparams}) {
+        say "$_: $refparams->{$_}" if $refparams->{$_} ne '';
+    }
+    say '-----';
 }
