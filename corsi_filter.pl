@@ -24,7 +24,6 @@ while (<$input>) {
     if ($instName) {
         foreach (@corsi_components) {
             if ($instName eq $_->{'name'}) {
-                #say "$instName: $line_args[2]" if $instName eq $_->{'name'};
                 $line_args[2] = $params->{$_->{'name'}};
             }
         }
